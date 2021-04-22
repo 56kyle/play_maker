@@ -7,6 +7,7 @@ import { Button } from '@material-ui/core';
 
 import Draggable from 'react-draggable';
 import { isConstructorDeclaration } from 'typescript';
+import { isContext } from 'node:vm';
 
 export interface FieldProps {
 }
@@ -69,7 +70,7 @@ export default class Field extends React.Component<FieldProps, FieldState> {
                 <div className="Field">
                     {this.state.players.map(function(player: Player) {
                         return(
-                            <Draggable bounds="parent" onStop={(element) => {player.handleStop()}}>
+                            <Draggable bounds="parent" onMouseDown={(e) => {player.handleStop()}}>
                                 {player.render()}
                             </Draggable>
                         );

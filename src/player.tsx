@@ -35,15 +35,16 @@ export class Player extends React.Component<PlayerProps, PlayerState> {
         if (!position) {
             position = this.state.position;
         }
-        this.state = {
+        this.setState({
             position: position,
             size: this.state.size,
             vectors: this.state.vectors,
             selected: this.state.selected,
-        };
+        });
     }
 
     handleStop() {
+        console.log("Player.state before = ", this.state)
         this.setState(state => {
             return {
                 position: this.state.position,
@@ -52,6 +53,7 @@ export class Player extends React.Component<PlayerProps, PlayerState> {
                 selected: !this.state.selected,
             };
         })
+        console.log("Player.state = ", this.state)
     }
 
     addVector(x: number, y: number) {
