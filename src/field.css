@@ -1,0 +1,21 @@
+.Main {
+    background-color: #47af16;
+    position: absolute;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+}
+
+.Field {
+    position: absolute;
+    left: 25%;
+    top: 25%;
+    background-color: green;
+    width: 500px;
+    height: 500px;
+}
+
+.AddPlayerButton {
+    color: black;
+}
+
