@@ -1,46 +1,49 @@
 
 import React from 'react';
+import { Player } from './player'
 
-type VectorProps = {};
-type VectorState = {};
+type VectorProps = {
+    key: string,
+    player: Player,
+};
 
-export class Vector extends React.Component {
-    origin?: Vector;
-    x: number;
-    y: number;
-    xi: number;
-    yi: number;
-    xf: number;
-    yf: number;
+type VectorState = {
+    origin?: Vector,
+    xi: number,
+    xf: number,
+    yi: number,
+    yf: number,
+};
 
+export class Vector extends React.Component<VectorProps, VectorState> {
     constructor(props: VectorProps, x: number, y: number, origin?: Vector) {
         super(props);
-        this.x = x;
-        this.y = y;
-        if (this.origin) {
-            this.xi = this.origin.xf;
-            this.yi = this.origin.yf;
-        } else {
-            this.xi = 0;
-            this.yi = 0;
-        }
+        let xi = this.props.player.state.position.x;
+        let yi = this.props.player.state.position.y;
+        if (origin) {
+            xi = origin.state.xf;
+            yi = origin.state.yf;
+        };
 
-        this.xf = this.xi + this.x;
-        this.yf = this.yi + this.y;
+        let xf = xi + x;
+        let yf = yi + y;
+        this.state = {
+            origin: origin ? origin : undefined,
+            xi: xi,
+            yi: yi,
+            xf: xf,
+            yf: yf,
+        };
     }
 
     render() {
         return (
-            <svg>
-                <line
-                 x1={this.xi}
-                 y1={this.yi}
-                 x2={this.xf}
-                 y2={this.yf}
-                 stroke="000"
-                 stroke-width={2}
-                 />
-            </svg>
+            <line
+                x1={this.state.xi}
+                y1={this.state.yi}
+                x2={this.state.xf}
+                y2={this.state.yf}
+            />
         );
     }
 }

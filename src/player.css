@@ -10,13 +10,6 @@
 .Player {
     position: absolute;
     fill: blue;
-    stroke: white;
     stroke-width: 1px;
 }
 
-.SelectedPlayer {
-    position: absolute;
-    fill: blue;
-    stroke: yellow;
-    stroke-width: 1px;
-}

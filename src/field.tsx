@@ -8,27 +8,33 @@ import { Button } from '@material-ui/core';
 import Draggable from 'react-draggable';
 import { isConstructorDeclaration } from 'typescript';
 import { isContext } from 'node:vm';
+import { Vector } from './vector';
 
 export interface FieldProps {
 }
 
 export interface FieldState {
     players: Player[];
+    selection?: Player;
 }
 
 export default class Field extends React.Component<FieldProps, FieldState> {
-    public readonly state: Readonly<FieldState> = {
-        players: [],
-    }
-
     constructor(props: FieldProps) {
         super(props);
+        this.state = {players: []};
         console.log("Field - Constructor");
+    }
+
+    onMouseDown = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (this.state.selection) {
+            this.state.selection.addVector(e.clientX - this.state.selection.state.position.x, e.clientY - this.state.selection.state.position.y)
+        }
     }
 
     addPlayer() {
         this.setState(state => {
-            const players: Player[] = this.state.players.concat(new Player({key: uuidv4()}))
+            const players: Player[] = this.state.players.concat(new Player({key: uuidv4(), field: this}))
             return {
                 players: players,
             };
@@ -37,9 +43,9 @@ export default class Field extends React.Component<FieldProps, FieldState> {
     }
 
     undoPlayer() {
+        const players: Player[] = this.state.players;
+        players.pop()
         this.setState(state => {
-            const players: Player[] = this.state.players;
-            players.pop()
             return {
                 players: players,
             };
@@ -47,11 +53,12 @@ export default class Field extends React.Component<FieldProps, FieldState> {
         console.log("Field - Player Undone")
     }
 
-    deletePlayer(key: string) {
+    deletePlayer() {
         this.setState(state => {
+            let selection = this.state.selection;
             const players: Player[] = this.state.players;
             players.forEach(function(player, index) {
-                if (player.props.key == key) {
+                if (selection == player) {
                     delete players[index];
                 }
             });
@@ -67,16 +74,26 @@ export default class Field extends React.Component<FieldProps, FieldState> {
         console.log("Field - Render")
         return (
             <div className="Main">
-                <div className="Field">
+                <div className="Field" onClick={this.onMouseDown}>
                     {this.state.players.map(function(player: Player) {
                         return(
-                            <Draggable bounds="parent" onMouseDown={(e) => {player.handleStop()}}>
+                            <Draggable bounds="parent" >
                                 {player.render()}
                             </Draggable>
                         );
                     })}
                 </div>
-                <Button className="AddPlayerButton" color="primary" onClick={() => {this.addPlayer()}}></Button>
+                <div>
+                    <span>
+                        <Button className="AddPlayerButton" variant="contained" color="primary" onClick={(e) => {e.preventDefault(); this.addPlayer()}}>Add Player</Button>
+                    </span>
+                    <span>
+                        <Button className="AddPlayerButton" variant="contained" color="primary" onClick={(e) => {e.preventDefault(); this.undoPlayer()}}>Undo Player</Button>
+                    </span>
+                    <span>
+                        <Button className="AddPlayerButton" variant="contained" color="primary" onClick={(e) => {e.preventDefault(); this.deletePlayer()}}>Delete Player</Button>
+                    </span>
+                </div>
             </div>
         );
     }
